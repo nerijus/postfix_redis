@@ -8,13 +8,17 @@ provisioner:
   # For example:
   #   always_update_cookbooks: <%= !ENV['CI'] %>
   always_update_cookbooks: true
+  driver_config:
+    provider: libvirt
 
 verifier:
   name: inspec
 
 platforms:
-  - name: ubuntu-16.04
   - name: centos-7
+    driver_config:
+      #box_url: https://vagrantcloud.com/centos/boxes/7/versions/1804.02/providers/libvirt.box
+      box_url: file:///mnt/d/libvirt_images/CentOS-7-x86_64-Vagrant-1804_02.Libvirt.box
 
 suites:
   - name: default

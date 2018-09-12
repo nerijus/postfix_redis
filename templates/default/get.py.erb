@@ -1,0 +1,27 @@
+#!/bin/python
+
+import sys
+import redis
+
+redis = redis.Redis('localhost')
+
+def read_email(addr):
+  output = ""
+  try:
+    for key in redis.keys():
+      if key != 'mail:id':
+        if redis.hget(key, 'To') == addr:
+          output += redis.hget(key, 'Message')
+          output += "----------------------------------------\n"
+  except:
+    print 'Unexpected error:', sys.exc_info()[0]
+    exit(1)
+  return output
+
+try:
+  rcptto = sys.argv[1]
+except:
+  print "Please input recipient address"
+  exit(1)
+
+print read_email(rcptto)

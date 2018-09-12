@@ -1,0 +1,32 @@
+#!/bin/python
+
+import sys
+import redis
+
+def get_rcptto(data):
+  try:
+    for line in data:
+      if 'X-Original-To' in line:
+        return line.strip().split()[1]
+  except:
+    print 'Unexpected error:', sys.exc_info()[0]
+    exit(1)
+
+def get_message(data):
+  message = ""
+  try:
+    for line in data:
+        message += line
+  except:
+    print 'Unexpected error:', sys.exc_info()[0]
+    exit(1)
+  return message
+
+ff = sys.stdin.readlines()
+rcptto = get_rcptto(ff)
+message = get_message(ff)
+
+redis = redis.Redis('localhost')
+redis.incr('mail:id')
+id = redis.get('mail:id')
+redis.hmset(id, {'To':rcptto, 'Message':message})

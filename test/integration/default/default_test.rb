@@ -27,6 +27,10 @@ describe user('mailuser') do
   it { should exist }
 end
 
+describe file("/home/mailuser/.forward") do
+  it { should exist }
+end
+
 describe file("/opt/postfix_redis/get.py") do
   it { should exist }
 end
